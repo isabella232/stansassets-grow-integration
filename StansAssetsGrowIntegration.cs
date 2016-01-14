@@ -7,10 +7,12 @@
  *   Written by Refael Dakar <refael@soom.la>
  */
 
+using UnityEngine;
+
 namespace Grow.Integrations
 {
 
-	public class StansAssetsGrowIntegration : GrowIntegration {
+	public class StansAssetsGrowIntegration : GameObjectGrowIntegration {
 
 		private const string TAG = "GROW StansAssetsIntegration";
 
@@ -23,7 +25,7 @@ namespace Grow.Integrations
 
 		private static StansAssetsGrowIntegration Instance
 		{
-			get 
+			get
 			{
 				if (instance == null)
 				{
@@ -37,7 +39,7 @@ namespace Grow.Integrations
 		// Integration specific implementation
 
 		public override void Initialize() {
-			// Add to all listeners here
+			YOUR_GAME_OBJECT_NAME.Initialize ();
 		}
 
 		public override string GetIntegrationName() {
@@ -56,7 +58,33 @@ namespace Grow.Integrations
 			return new string[]{ };
 		}
 
-		// Delegate methods implementation and calls to GrowIntegration methods here
+		public class YOUR_GAME_OBJECT_NAME : IntegrationGameObject {
+
+			private static bool initialized = false;
+
+			public static void Initialize() {
+				if (!initialized) {
+					Debug.Log (TAG + " Initializing...");
+					GetSynchronousCodeGeneratedInstance<YOUR_GAME_OBJECT_NAME> ();
+					initialized = true;
+				}
+			}
+
+			// All messages of your game objects go here
+
+			public void MessageExample(string message) {
+				// Code to parse message (if it's a json you can use:
+				// JSONObject messageJson = new JSONObject(message);
+				// JSONObject is included in the GrowIntegration.dll
+
+				// Send the event to GrowIntegration. Example:
+				// StansAssetsGrowIntegration.Instance.OnLoginFinished (provider, user_id);
+
+				// Call DelegateMessage to continue the message if needed
+				DelegateMessage (message);
+			}
+
+		}
 
     }
 }
