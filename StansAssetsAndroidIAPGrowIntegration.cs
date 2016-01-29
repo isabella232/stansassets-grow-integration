@@ -45,7 +45,7 @@ namespace Grow.Integrations
 		// Integration specific implementation
 		
 		public override void Initialize() {
-			YOUR_GAME_OBJECT_NAME.Initialize ();
+			AndroidInAppPurchaseManager.Initialize ();
 		}
 		
 		public override string GetIntegrationName() {
@@ -64,14 +64,14 @@ namespace Grow.Integrations
 			return new string[]{ };
 		}
 		
-		public class YOUR_GAME_OBJECT_NAME : IntegrationGameObject {
+		public class AndroidInAppPurchaseManager : IntegrationGameObject {
 			
 			private static bool initialized = false;
 			
 			public static void Initialize() {
 				if (!initialized) {
 					Debug.Log (TAG + " Initializing...");
-					GetSynchronousCodeGeneratedInstance<YOUR_GAME_OBJECT_NAME> ();
+					GetSynchronousCodeGeneratedInstance<AndroidInAppPurchaseManager> ();
 					initialized = true;
 				}
 			}
