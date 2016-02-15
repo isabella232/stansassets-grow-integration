@@ -15,7 +15,7 @@ namespace Grow.Integrations
 
 	public class StansAssetsIOSIAPGrowIntegration : GameObjectGrowIntegration {
 
-		private const string TAG = "GROW IOS IAP StansAssetsIntegration";
+		private const string TAG = "GROW IOSIAPStansAssetsIntegration";
 		public const char DATA_SPLITTER = '|';
 
 		public static Dictionary<string, IOSProductTemplate> products = new Dictionary<string, IOSProductTemplate>();
@@ -46,11 +46,11 @@ namespace Grow.Integrations
 		}
 
 		public override string GetIntegrationName() {
-			return "stansassets";
+			return "stansassetsiapios";
 		}
 
 		public override string GetIntegrationDisplayName() {
-			return "Stan's Assets";
+			return "Stan's Assets IAP (iOS)";
 		}
 
 		public override string GetIntegrationVersion() {

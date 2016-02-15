@@ -15,7 +15,7 @@ namespace Grow.Integrations
 	
 	public class StansAssetsAndroidIAPGrowIntegration : GameObjectGrowIntegration {
 		
-		private const string TAG = "GROW Android IAP StansAssetsIntegration";
+		private const string TAG = "GROW AndroidIAPStansAssetsIntegration";
 
 		public const string DATA_SPLITTER = "|";
 		public const int BILLING_RESPONSE_RESULT_OK = 0;
@@ -49,11 +49,11 @@ namespace Grow.Integrations
 		}
 		
 		public override string GetIntegrationName() {
-			return "stansassets";
+			return "stansassetsiapandroid";
 		}
 		
 		public override string GetIntegrationDisplayName() {
-			return "Stan's Assets";
+			return "Stan's Assets IAP (Android)";
 		}
 		
 		public override string GetIntegrationVersion() {

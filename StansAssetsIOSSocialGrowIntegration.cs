@@ -14,7 +14,7 @@ namespace Grow.Integrations
 	
 	public class StansAssetsIOSSocialGrowIntegration : GameObjectGrowIntegration {
 		
-		private const string TAG = "GROW IOS Social StansAssetsIntegration";
+		private const string TAG = "GROW IOSSocialStansAssetsIntegration";
 		
 		
 		// Integration instance
@@ -43,11 +43,11 @@ namespace Grow.Integrations
 		}
 		
 		public override string GetIntegrationName() {
-			return "stansassets";
+			return "stansassetssocialios";
 		}
 		
 		public override string GetIntegrationDisplayName() {
-			return "Stan's Assets";
+			return "Stan's Assets Social (iOS)";
 		}
 		
 		public override string GetIntegrationVersion() {
