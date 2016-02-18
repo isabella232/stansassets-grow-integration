@@ -79,6 +79,10 @@ namespace Grow.Integrations
 				}
 			}
 
+			public void OnQueryInventoryFinishedCallBack(string data) {
+				DelegateMessage (data);
+			}
+				
 			public void OnProducttDetailsRecive(string data) {
 				if(data.Equals(string.Empty)) {
 					return;
