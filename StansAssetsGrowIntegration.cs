@@ -8,6 +8,7 @@
  */
 
 using UnityEngine;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace Grow.Integrations
@@ -48,6 +49,7 @@ namespace Grow.Integrations
 			AndroidInAppPurchaseManager.Initialize ();
 			IOSInAppPurchaseManager.Initialize ();
 			IOSSocialManager.Initialize ();
+			UnityFacebookSDKPlugin.Initialize ();
 		}
 		
 		public override string GetIntegrationName() {
@@ -321,6 +323,118 @@ namespace Grow.Integrations
 				DelegateMessage();
 			}
 
+		}
+
+		public class UnityFacebookSDKPlugin : IntegrationGameObject {
+
+			private const SocialProvider PROVIDER = SocialProvider.FACEBOOK;
+			private static bool initialized = false;
+
+			private bool loggedIn = false;
+
+			public static void Initialize() {
+				if (!initialized) {
+					Debug.Log (TAG + " Initializing Stan's Facebook plugin...");
+					GetSynchronousCodeGeneratedInstance<UnityFacebookSDKPlugin> ();
+					initialized = true;
+				}
+			}
+
+			public void OnInitComplete(string message) {
+				JSONObject messageJson = new JSONObject (message);
+				if (messageJson ["user_id"] && !loggedIn) {
+					StartCoroutine (OnLoginFinished (messageJson));
+				}
+				DelegateMessage (message);
+			}
+
+			public void OnLoginComplete(string message)	{
+				JSONObject eventInfo = new JSONObject(message);
+				if (!loggedIn) {
+					if (eventInfo ["user_id"]) {
+						StartCoroutine (OnLoginFinished (eventInfo));
+					} else if (isCancelled (eventInfo)) {
+						StansAssetsGrowIntegration.Instance.OnLoginCancelled (PROVIDER);
+					} else {
+						StansAssetsGrowIntegration.Instance.OnLoginFailed (PROVIDER);
+					}
+				}
+				DelegateMessage (message);
+			}
+
+			private IEnumerator OnLoginFinished(JSONObject eventInfo) {
+				loggedIn = true;
+				string profileId = eventInfo["user_id"].str;
+				string accessToken = eventInfo["access_token"].str;
+				WWW www = new WWW("https://graph.facebook.com/" + profileId + "?fields=email&access_token=" + accessToken);
+				yield return www;
+				Grow.JSONObject responseJson = new Grow.JSONObject (www.text);
+				Grow.JSONObject email = responseJson ["email"];
+				StansAssetsGrowIntegration.Instance.OnLoginFinished (PROVIDER, eventInfo ["user_id"].str, email != null? email.str : null);
+			}
+
+			public void OnLogoutComplete(string message){
+				StansAssetsGrowIntegration.Instance.OnLogoutFinished (PROVIDER);
+				loggedIn = false;
+				DelegateMessage (message);
+			}
+
+			public void OnGetAppLinkComplete(string message){
+				DelegateMessage (message);
+			}
+
+			public void OnFetchDeferredAppLinkComplete(string message){
+				DelegateMessage (message);
+			}
+
+			public void OnGroupCreateComplete(string message){
+				DelegateMessage (message);
+			}
+
+			public void OnGroupJoinComplete(string message){
+				DelegateMessage (message);
+			}
+
+			public void OnAppRequestsComplete(string message){
+				DelegateMessage (message);
+			}
+
+			public void OnAppInviteComplete(string message){
+				SocialActionType actionType = SocialActionType.INVITE;
+				JSONObject eventInfo = new JSONObject (message);
+
+				if (didComplete(eventInfo)) {
+					StansAssetsGrowIntegration.Instance.OnSocialActionFinished (PROVIDER, actionType);
+				} else if (isCancelled(eventInfo)) {
+					StansAssetsGrowIntegration.Instance.OnSocialActionCancelled (PROVIDER, actionType);
+				} else { // if eventInfo ["error"]
+					StansAssetsGrowIntegration.Instance.OnSocialActionFailed (PROVIDER, actionType);
+				}
+				DelegateMessage (message);
+			}
+
+			public void OnShareLinkComplete(string message){
+				SocialActionType actionType = SocialActionType.UPDATE_STORY;
+				JSONObject eventInfo = new JSONObject (message);
+
+				if (eventInfo ["postId"] || eventInfo ["id"]) {
+					StansAssetsGrowIntegration.Instance.OnSocialActionFinished (PROVIDER, actionType);
+				} else if (isCancelled(eventInfo) || didComplete(eventInfo) || eventInfo ["posted"]) {
+					StansAssetsGrowIntegration.Instance.OnSocialActionCancelled (PROVIDER, actionType);
+				} else { // if eventInfo ["error"]
+					StansAssetsGrowIntegration.Instance.OnSocialActionFailed (PROVIDER, actionType);
+				}
+
+				DelegateMessage (message);
+			}
+
+			private bool isCancelled(JSONObject eventInfo) {
+				return eventInfo ["cancelled"];// && eventInfo ["cancelled"].str.Equals ("true");
+			}
+
+			private bool didComplete(JSONObject eventInfo) {
+				return eventInfo ["didComplete"];// && (eventInfo ["didComplete"].str.Equals ("1") || eventInfo ["didComplete"].str.Equals ("true"));
+			}
 		}
 
 
