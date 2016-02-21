@@ -61,7 +61,7 @@ namespace Grow.Integrations
 		}
 		
 		public override string GetIntegrationVersion() {
-			return "1.0.0";
+			return "1.0.1";
 		}
 		
 		public override string[] GetDependencies() {
