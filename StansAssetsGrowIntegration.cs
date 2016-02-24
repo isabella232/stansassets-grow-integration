@@ -14,7 +14,7 @@ using System.Collections.Generic;
 namespace Grow.Integrations
 {
 	
-	public class StansAssetsGrowIntegration : GameObjectGrowIntegration {
+	public class StansAssetsGrowIntegration : GrowIntegration {
 		
 		private const string TAG = "GROW StansAssetsIntegration";
 
@@ -61,7 +61,7 @@ namespace Grow.Integrations
 		}
 		
 		public override string GetIntegrationVersion() {
-			return "1.0.0";
+			return "1.0.1";
 		}
 		
 		public override string[] GetDependencies() {
